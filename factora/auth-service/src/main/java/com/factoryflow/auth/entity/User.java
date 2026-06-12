@@ -28,4 +28,9 @@ public class User {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void createdTime() {
+        this.createdAt = LocalDateTime.now();
+    }
 }
