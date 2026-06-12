@@ -11,7 +11,12 @@ import lombok.Data;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(
+    		strategy = GenerationType.SEQUENCE,
+    		generator = "sequence")
+    @SequenceGenerator(
+    		name = "sequence",
+    		allocationSize = 1)
     private Long id;
 
     private String name;
@@ -25,6 +30,10 @@ public class User {
     private String role;
 
     private boolean status;
+    
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private Vendor vendor;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

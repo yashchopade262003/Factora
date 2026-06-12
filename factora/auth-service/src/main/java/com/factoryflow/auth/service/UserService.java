@@ -9,35 +9,43 @@ import com.factoryflow.auth.InterfaceService.IUserService;
 import com.factoryflow.auth.dao.UserDAO;
 import com.factoryflow.auth.dto.UserDTO;
 import com.factoryflow.auth.entity.User;
+import com.factoryflow.auth.entity.Vendor;
+import com.factoryflow.auth.repository.VendorRepository;
+
 @Service
 public class UserService implements IUserService {
 
-    @Autowired
-    private ModelMapper mapper;
+	@Autowired
+	private ModelMapper mapper;
 
-    @Autowired
-    private UserDAO userDAO;
+	@Autowired
+	private UserDAO userDAO;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDTO registerUser(UserDTO user) {
+	// ADD THIS
+	@Autowired
+	private VendorRepository vendorRepository;
 
-        User userentity =
-                mapper.map(user, User.class);
+	@Override
+	public UserDTO registerUser(UserDTO user) {
 
-        // IMPORTANT
-        userentity.setPassword(
-                passwordEncoder.encode(
-                        userentity.getPassword()));
+		User userentity = mapper.map(user, User.class);
 
-        User registerUser =
-                userDAO.registerUser(userentity);
+		// password encode
+		userentity.setPassword(passwordEncoder.encode(userentity.getPassword()));
 
-        UserDTO userdto =
-                mapper.map(registerUser, UserDTO.class);
+		// IMPORTANT PART
+		Vendor vendor = vendorRepository.findById(user.getVendorId()).orElseThrow();
 
-        return userdto;
-    }
+		// SET VENDOR
+		userentity.setVendor(vendor);
+
+		User registerUser = userDAO.registerUser(userentity);
+
+		UserDTO userdto = mapper.map(registerUser, UserDTO.class);
+
+		return userdto;
+	}
 }

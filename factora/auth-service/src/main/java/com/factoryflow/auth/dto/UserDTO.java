@@ -22,4 +22,6 @@ public class UserDTO {
 	private LocalDateTime createsAt;
 
 	private boolean status;
+	
+	private Long VendorId;
 }
