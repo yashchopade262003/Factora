@@ -1,0 +1,54 @@
+
+api-gateway
+│
+├── config
+│     ├── GatewayConfig
+│     └── CorsConfig
+│
+├── filter
+│     └── JwtAuthenticationFilter
+│
+├── util
+│     └── JwtUtil
+│
+├── application.properties
+│
+└── ApiGatewayApplication
+
+
+
+-------------------------------------------------------------------
+1. application.properties
+
+Contains:
+
+routes
+eureka config
+gateway config
+
+
+------------------------------------------------example
+spring.application.name=API-GATEWAY
+
+server.port=8085
+
+eureka.client.service-url.defaultZone=http://localhost:8761/eureka/
+
+# AUTH SERVICE
+spring.cloud.gateway.routes[0].id=AUTH-SERVICE
+spring.cloud.gateway.routes[0].uri=lb://AUTH-SERVICE
+spring.cloud.gateway.routes[0].predicates[0]=Path=/auth/**
+
+# USER
+spring.cloud.gateway.routes[1].id=AUTH-SERVICE
+spring.cloud.gateway.routes[1].uri=lb://AUTH-SERVICE
+spring.cloud.gateway.routes[1].predicates[0]=Path=/user/**
+
+# VENDOR
+spring.cloud.gateway.routes[2].id=AUTH-SERVICE
+spring.cloud.gateway.routes[2].uri=lb://AUTH-SERVICE
+spring.cloud.gateway.routes[2].predicates[0]=Path=/vendors/**
+
+-----------------------------------------------------------------
+
+must wastch https://www.youtube.com/watch?v=MWvnmyLRUik
