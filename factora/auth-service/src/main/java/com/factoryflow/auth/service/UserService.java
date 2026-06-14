@@ -36,7 +36,7 @@ public class UserService implements IUserService {
 		// password encode
 		userentity.setPassword(passwordEncoder.encode(userentity.getPassword()));
 
-		// IMPORTANT PART
+// IMPORTANT PART
 		Vendor vendor = vendorRepository.findById(user.getVendorId()).orElseThrow();
 
 		// SET VENDOR
@@ -45,7 +45,6 @@ public class UserService implements IUserService {
 		User registerUser = userDAO.registerUser(userentity);
 
 		UserDTO userdto = mapper.map(registerUser, UserDTO.class);
-
 		return userdto;
 	}
 }

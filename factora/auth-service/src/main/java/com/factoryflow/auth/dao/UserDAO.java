@@ -23,6 +23,5 @@ public class UserDAO {
 		
 		  return  repository.findByEmail(email);
 	}
-	
 
 }
