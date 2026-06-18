@@ -1,7 +1,5 @@
 package com.factoryflow.auth.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,27 +14,22 @@ public class CustomUserDetailsService
         implements UserDetailsService {
 
     @Autowired
-    private UserDAO userdao;
+    private UserDAO userDAO;
 
     @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException {
 
-        Optional<User> user =
-                userdao.userLogin(username);
-
-        if (user.isPresent()) {
-
-            User userLogin = user.get();
-
-            return org.springframework.security.core.userdetails.User
-                    .withUsername(userLogin.getEmail())
-                    .password(userLogin.getPassword())
-                    .roles(userLogin.getRole())
-                    .build();
+        User user = userDAO.userLogin(username);
+        if(user!=null) {
+        	 throw new RuntimeException("user found");
         }
-
-        throw new UsernameNotFoundException(
-                "User Not Found");
+               
+           
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getUsername())
+                .password(user.getPassword())
+                .roles(user.getRole().toString())
+                .build();
     }
 }

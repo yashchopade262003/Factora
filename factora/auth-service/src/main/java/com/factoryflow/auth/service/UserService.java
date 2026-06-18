@@ -1,43 +1,97 @@
 package com.factoryflow.auth.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.factoryflow.auth.InterfaceService.IUserService;
+import com.factoryflow.auth.dao.RoleDAO;
 import com.factoryflow.auth.dao.UserDAO;
+import com.factoryflow.auth.dao.VendorDAO;
 import com.factoryflow.auth.dto.UserDTO;
+import com.factoryflow.auth.entity.Role;
 import com.factoryflow.auth.entity.User;
+import com.factoryflow.auth.entity.Vendor;
+
 @Service
 public class UserService implements IUserService {
 
-    @Autowired
-    private ModelMapper mapper;
+	@Autowired
+	private ModelMapper mapper;
 
-    @Autowired
-    private UserDAO userDAO;
+	@Autowired
+	private UserDAO userDAO;
+@Autowired
+	VendorDAO vendorDAO;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+@Autowired
+	RoleDAO roleDAO;
+	@Override
+	public UserDTO registerUser(UserDTO userDTO) {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+	    User user = new User();
 
-    @Override
-    public UserDTO registerUser(UserDTO user) {
+	    user.setUsername(userDTO.getUsername());
+	    user.setEmail(userDTO.getEmail());
+	    user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+	    user.setPhone(userDTO.getPhone());
+	    user.setStatus(userDTO.getStatus());
 
-        User userentity =
-                mapper.map(user, User.class);
+	    Vendor vendor = vendorDAO.findById(userDTO.getVendorId())
+	            .orElseThrow(() -> new RuntimeException("Vendor Not Found"));
 
-        // IMPORTANT
-        userentity.setPassword(
-                passwordEncoder.encode(
-                        userentity.getPassword()));
+	    Role role = roleDAO.findById(userDTO.getRoleId())
+	            .orElseThrow(() -> new RuntimeException("Role Not Found"));
 
-        User registerUser =
-                userDAO.registerUser(userentity);
+	    user.setVendor(vendor);
+	    user.setRole(role);
 
-        UserDTO userdto =
-                mapper.map(registerUser, UserDTO.class);
+	    User savedUser = userDAO.registerUser(user);
 
-        return userdto;
-    }
+	    return mapper.map(savedUser, UserDTO.class);
+	}
+	@Override
+	public UserDTO getUserById(Long userId) {
+
+	Optional<User> byId = userDAO.findById(userId);
+	User user = byId.get();
+
+		return mapper.map(user, UserDTO.class);
+	}
+
+	@Override
+	public List<UserDTO> getAllUsers() {
+
+		return userDAO.getAllUsers().stream().map(user -> mapper.map(user, UserDTO.class)).toList();
+	}
+
+	@Override
+	public UserDTO updateUser(Long userId, UserDTO userDTO) {
+
+		 Optional<User> byId = userDAO.findById(userId);
+		 User existingUser = byId.get();
+
+		existingUser.setUsername(userDTO.getUsername());
+
+		existingUser.setEmail(userDTO.getEmail());
+
+		existingUser.setPhone(userDTO.getPhone());
+
+		existingUser.setStatus(userDTO.getStatus());
+
+		User updatedUser = userDAO.registerUser(existingUser);
+
+		return mapper.map(updatedUser, UserDTO.class);
+	}
+
+	@Override
+	public void deleteUser(Long userId) {
+
+		userDAO.deleteUser(userId);
+	}
 }

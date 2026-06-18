@@ -1,4 +1,4 @@
-package com.factoryflow.auth.jwtUtils;
+package com.factoryflow.auth.dto;
 
 
 import lombok.Data;

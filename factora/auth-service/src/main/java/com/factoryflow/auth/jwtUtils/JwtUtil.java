@@ -15,31 +15,24 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtil {
 
     private static final String SECRET =
-            "mysecretkeymysecretkeymysecretkey12345";
+            "factoryflowjwtsecretkeyfactoryflowjwtsecretkey2026";
 
     private final SecretKey key =
             Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // generate token
     public String generateToken(String email) {
 
         return Jwts.builder()
-
                 .setSubject(email)
-
                 .setIssuedAt(new Date())
-
                 .setExpiration(
                         new Date(
                                 System.currentTimeMillis()
                                         + 1000 * 60 * 60))
-
                 .signWith(key, SignatureAlgorithm.HS256)
-
                 .compact();
     }
 
-    // extract email
     public String extractUsername(String token) {
 
         Claims claims =
@@ -52,14 +45,11 @@ public class JwtUtil {
         return claims.getSubject();
     }
 
-    // validate token
     public boolean validateToken(
             String token,
             String username) {
 
-        String extractedUsername =
-                extractUsername(token);
-
-        return extractedUsername.equals(username);
+        return extractUsername(token)
+                .equals(username);
     }
 }
