@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.factoryflow.auth.dto.VendorDTO;
 
-public interface IvendorService {
+public interface IVendorService {
 	VendorDTO addVendor(VendorDTO vendorDTO);
 
 	VendorDTO getVendorById(Long vendorId);

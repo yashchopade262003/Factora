@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.factoryflow.auth.InterfaceService.IvendorService;
+import com.factoryflow.auth.InterfaceService.IVendorService;
 import com.factoryflow.auth.dto.VendorDTO;
 
 @RestController
@@ -19,7 +19,7 @@ import com.factoryflow.auth.dto.VendorDTO;
 public class VendorController {
 
 	@Autowired
-	private IvendorService vendorService;
+	private IVendorService vendorService;
 
 	@PostMapping("/add")
 	public ResponseEntity<VendorDTO> addVendor(@RequestBody VendorDTO dto) {

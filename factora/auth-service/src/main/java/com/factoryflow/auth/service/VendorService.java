@@ -6,14 +6,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.factoryflow.auth.InterfaceService.IvendorService;
+import com.factoryflow.auth.InterfaceService.IVendorService;
 import com.factoryflow.auth.dao.VendorDAO;
 import com.factoryflow.auth.dto.VendorDTO;
 import com.factoryflow.auth.entity.Vendor;
 import com.factoryflow.auth.repository.VendorRepository;
 
 @Service
-public class VendorService implements IvendorService {
+public class VendorService implements IVendorService {
 
     @Autowired
     private ModelMapper mapper;
