@@ -45,4 +45,13 @@ public class InventoryDAO {
 	public List<Inventory> findByWareHouseLocation(String location) {
 		return inventoryRepository.findByWarehouseLocation(location);
 	}
+	
+	
+	public Optional<Inventory> getInventoryById(Long id) {
+		return  inventoryRepository.findById(id);
+	}
+	
+	public void deleteAllInventory() {
+		inventoryRepository.deleteAll();
+	}
 }

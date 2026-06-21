@@ -12,7 +12,10 @@ public class InventryServiceApplication {
 		SpringApplication.run(InventryServiceApplication.class, args);
 	}
 	@Bean
-	public ModelMapper mapper() {
-		return new ModelMapper();
+	public ModelMapper modelMapper() {
+	    ModelMapper modelMapper = new ModelMapper();
+	    modelMapper.getConfiguration()
+	            .setAmbiguityIgnored(true);
+	    return modelMapper;
 	}
 }

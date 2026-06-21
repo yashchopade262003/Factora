@@ -2,52 +2,77 @@ package org.inventry.service.controller;
 
 import java.util.List;
 
-import org.inventry.service.ResponceEntity.ResponceStructure;
+import org.inventry.service.ResponceEntity.ResponseStructure;
 import org.inventry.service.dto.InventoryDTO;
 import org.inventry.service.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/inventory")
 public class InventoryController {
 
-	@Autowired
-	InventoryService inventoryService;
+    @Autowired
+    private InventoryService inventoryService;
 
-	@GetMapping("/save")
-	public ResponseEntity<ResponceStructure<InventoryDTO>> saveInventory(@RequestBody InventoryDTO dto) {
-		return inventoryService.saveInventory(dto);
-	}
+    @PostMapping("/add")
+    public ResponseEntity<ResponseStructure<InventoryDTO>> saveInventory(
+            @RequestBody InventoryDTO dto) {
 
-	@GetMapping("/material/{code}")
-	public ResponseEntity<ResponceStructure<InventoryDTO>> findByMaterialCode(@PathVariable String code) {
-		return inventoryService.findByMaterialCode(code);
-	}
+        return inventoryService.saveInventory(dto);
+    }
 
-	@GetMapping("/getall")
-	public ResponseEntity<ResponceStructure<List<InventoryDTO>>> getAllInventries() {
-		return inventoryService.getAllInventries();
-	}
+    @GetMapping("/material/{materialCode}")
+    public ResponseEntity<ResponseStructure<InventoryDTO>> findByMaterialCode(
+            @PathVariable String materialCode) {
 
-	@GetMapping("/delete/{id}")
-	public ResponseEntity<ResponceStructure<InventoryDTO>> deleteById(@PathVariable Long id) {
-		return inventoryService.deleteById(id);
-	}
-	
-	@GetMapping("/stock")
-	public ResponseEntity<ResponceStructure<Long>> getStockCount() {
-	return 	inventoryService.getStockCount();
-	}
-	
-	@GetMapping("/location/{loc}")
-	public ResponseEntity<ResponceStructure<List<InventoryDTO>>> findByWarehouseLocation(@PathVariable String loc) {
-		  return  inventoryService.FindByWarehouseLocation(loc);
-	}
-	
+        return inventoryService.findByMaterialCode(materialCode);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<ResponseStructure<List<InventoryDTO>>> getAllInventories() {
+
+        return inventoryService.getAllInventories();
+    }
+
+ 
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseStructure<InventoryDTO>> getInventoryById(
+            @PathVariable Long id) {
+
+        return inventoryService.getInventoryById(id);
+    }
+
+   
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ResponseStructure<InventoryDTO>> updateInventory(
+            @PathVariable Long id,
+            @RequestBody InventoryDTO dto) {
+
+        return inventoryService.updateInventory(id, dto);
+    }
+
+   
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseStructure<String>> deleteInventory(
+            @PathVariable Long id) {
+
+        return inventoryService.deleteInventory(id);
+    }
+
+   
+    @GetMapping("/count")
+    public ResponseEntity<ResponseStructure<Long>> getInventoryCount() {
+
+        return inventoryService.getInventoryCount();
+    }
+
+   
+    @GetMapping("/warehouse/{location}")
+    public ResponseEntity<ResponseStructure<List<InventoryDTO>>> findByWarehouseLocation(
+            @PathVariable String location) {
+
+        return inventoryService.findByWarehouse(location);
+    }
 }

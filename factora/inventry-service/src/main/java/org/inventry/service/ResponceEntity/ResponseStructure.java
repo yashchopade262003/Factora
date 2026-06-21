@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponceStructure<T> {
+public class ResponseStructure<T> {
 	
 	int statusCode;
 	String message;
