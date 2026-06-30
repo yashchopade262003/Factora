@@ -33,22 +33,17 @@ public class SecurityConfigure {
 
 				.authorizeHttpRequests(auth -> auth
 
-						.requestMatchers(
-							    "/auth/**",
-							    "/user/register",
-							    "/vendor/add",
-							    "/role/add",
-							    "/swagger-ui/**",
-							    "/v3/api-docs/**",
-							    "/swagger-ui.html"
-							).permitAll()
+						.requestMatchers("/auth/**", "/user/register", "/vendor/add", "/role/add", "/swagger-ui/**",
+								"/swagger-ui.html", "/v3/api-docs/**")
+						.permitAll()
+
 						.anyRequest().authenticated())
 
-				.exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
+				.authenticationProvider(authenticationProvider)
 
-				.authenticationProvider(authenticationProvider);
+				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
-//				.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+				.exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint));
 
 		return http.build();
 	}

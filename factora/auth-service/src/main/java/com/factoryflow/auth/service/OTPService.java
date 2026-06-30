@@ -10,70 +10,90 @@ import org.springframework.stereotype.Service;
 
 import com.factoryflow.auth.InterfaceService.IOTPService;
 import com.factoryflow.auth.dao.UserDAO;
-import com.factoryflow.auth.dto.AuthResponse;
+import com.factoryflow.auth.dto.LoginResponse;
 import com.factoryflow.auth.entity.User;
 import com.factoryflow.auth.jwtUtils.JwtUtil;
 import com.factoryflow.auth.utils.OTPGenrator;
 
-    @Service
-    public class OTPService implements IOTPService {
+@Service
+public class OTPService implements IOTPService {
 
-        private final Map<String, String> otpStore = new HashMap<>();
+	private final Map<String, String> otpStore = new HashMap<>();
 
-        @Autowired
-        private JavaMailSender mailSender;
+	@Autowired
+	private JavaMailSender mailSender;
 
-        @Autowired
-        private UserDAO userDAO;
+	@Autowired
+	private UserDAO userDAO;
 
-        @Autowired
-        private JwtUtil jwtUtil;
+	@Autowired
+	private JwtUtil jwtUtil;
 
-        @Override
-        public String sendOTP(String email) {
+	@Override
+	public String sendOTP(String email) {
 
-           User user = userDAO.fincdByEmail(email);
+		User user = userDAO.fincdByEmail(email);
 
-            String otp = OTPGenrator.generateOTP();
+		if (user == null) {
+			throw new RuntimeException("User Not Found");
+		}
 
-            otpStore.put(email, otp);
+		String otp = OTPGenrator.generateOTP();
 
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setTo(email);
-            message.setSubject("FactoryFlow Login OTP");
-            message.setText("Your OTP is : " + otp);
+		otpStore.put(email, otp);
 
-            mailSender.send(message);
+		SimpleMailMessage message = new SimpleMailMessage();
 
-            return "OTP Sent Successfully";
-        }
+		message.setTo(email);
 
-        @Override
-        public AuthResponse verifyOTP(String email, String otp) {
+		message.setSubject("FactoryFlow Login OTP");
 
-            String storedOtp = otpStore.get(email);
+		message.setText("Your OTP is : " + otp);
 
-            if (storedOtp == null) {
-                throw new RuntimeException("OTP Expired");
-            }
+		mailSender.send(message);
 
-            if (!storedOtp.equals(otp)) {
-                throw new RuntimeException("Invalid OTP");
-            }
+		return "OTP Sent Successfully";
+	}
 
-            otpStore.remove(email);
+	@Override
+	public LoginResponse verifyOTP(String email, String otp) {
 
-            User user = userDAO.fincdByEmail(email);
+		String storedOtp = otpStore.get(email);
 
-            if (user == null) {
-                throw new RuntimeException("User Not Found");
-            }
+		if (storedOtp == null) {
+			throw new RuntimeException("OTP Expired");
+		}
 
-            String token = jwtUtil.generateToken(user.getEmail());
+		if (!storedOtp.equals(otp)) {
+			throw new RuntimeException("Invalid OTP");
+		}
 
-            return new AuthResponse(token);
-        }
-    
+		otpStore.remove(email);
 
+		User user = userDAO.fincdByEmail(email);
+
+		if (user == null) {
+			throw new RuntimeException("User Not Found");
+		}
+
+		String token = jwtUtil.generateToken(user.getEmail());
+
+		return new LoginResponse(
+
+				token,
+
+				user.getUserId(),
+
+				user.getUsername(),
+
+				user.getEmail(),
+
+				user.getRole().getRoleName(),
+
+				user.getVendor().getVendorId()
+
+		);
+
+	}
 
 }

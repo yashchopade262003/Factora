@@ -20,6 +20,8 @@ public class UserDAO {
 	}
 
 	public User userLogin(String email) {
+		User byEmail = repository.findByEmail(email);
+		System.out.println(byEmail);
 
 		return repository.findByEmail(email);
 	}
